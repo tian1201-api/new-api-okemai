@@ -31,7 +31,7 @@ type Plan = {
   name: string
   provider: string
   price: string
-  accent: string
+  accentClass: string
   description: string
   features: string[]
 }
@@ -51,7 +51,7 @@ export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
       name: 'GPT Starter',
       provider: 'GPT',
       price: 'Starter',
-      accent: '#68d28c',
+      accentClass: 'okemai-plan-green',
       description: t('For light daily AI tasks and API experiments.'),
       features: [t('Use New API token management'), t('Recharge through wallet'), t('Track usage logs')],
     },
@@ -59,7 +59,7 @@ export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
       name: 'GPT Pro',
       provider: 'GPT',
       price: 'Pro',
-      accent: '#58c7b8',
+      accentClass: 'okemai-plan-teal',
       description: t('For production apps that need stable routing and billing.'),
       features: [t('Create multiple API tokens'), t('Model pricing visibility'), t('Quota and cost accounting')],
     },
@@ -67,7 +67,7 @@ export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
       name: 'Claude Team',
       provider: 'Claude',
       price: 'Team',
-      accent: '#a98bff',
+      accentClass: 'okemai-plan-violet',
       description: t('For teams using Claude-compatible channels through New API.'),
       features: [t('Channel failover by admin rules'), t('Centralized permissions'), t('Usage analytics')],
     },
@@ -105,7 +105,7 @@ export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
 
         <div className='grid gap-5 md:grid-cols-3'>
           {plans.map((plan) => (
-            <AnimateInView key={plan.name} className='okemai-plan-card p-6 pt-8' style={{ '--plan-accent': plan.accent } as React.CSSProperties}>
+            <AnimateInView key={plan.name} className={`okemai-plan-card ${plan.accentClass} p-6 pt-8`}>
               <div className='mb-5 flex items-start justify-between gap-4'>
                 <div>
                   <span className='text-xs font-bold uppercase tracking-[0.16em] text-[#95a2b6]'>
