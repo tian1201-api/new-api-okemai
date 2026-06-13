@@ -26,6 +26,17 @@ type SubscriptionBalancePayRequest struct {
 	PlanId int `json:"plan_id"`
 }
 
+func subscriptionPlanDTOs(plans []model.SubscriptionPlan) []SubscriptionPlanDTO {
+	result := make([]SubscriptionPlanDTO, 0, len(plans))
+	for _, p := range plans {
+		p.NormalizeDefaults()
+		result = append(result, SubscriptionPlanDTO{
+			Plan: p,
+		})
+	}
+	return result
+}
+
 // ---- User APIs ----
 
 func GetSubscriptionPlans(c *gin.Context) {
@@ -34,19 +45,12 @@ func GetSubscriptionPlans(c *gin.Context) {
 		return
 	}
 
-	var plans []model.SubscriptionPlan
-	if err := model.DB.Where("enabled = ?", true).Order("sort_order desc, id desc").Find(&plans).Error; err != nil {
+	plans, err := model.ListSubscriptionPlans(true)
+	if err != nil {
 		common.ApiError(c, err)
 		return
 	}
-	result := make([]SubscriptionPlanDTO, 0, len(plans))
-	for _, p := range plans {
-		p.NormalizeDefaults()
-		result = append(result, SubscriptionPlanDTO{
-			Plan: p,
-		})
-	}
-	common.ApiSuccess(c, result)
+	common.ApiSuccess(c, subscriptionPlanDTOs(plans))
 }
 
 func GetSubscriptionSelf(c *gin.Context) {
@@ -119,19 +123,12 @@ func SubscriptionRequestBalancePay(c *gin.Context) {
 // ---- Admin APIs ----
 
 func AdminListSubscriptionPlans(c *gin.Context) {
-	var plans []model.SubscriptionPlan
-	if err := model.DB.Order("sort_order desc, id desc").Find(&plans).Error; err != nil {
+	plans, err := model.ListSubscriptionPlans(false)
+	if err != nil {
 		common.ApiError(c, err)
 		return
 	}
-	result := make([]SubscriptionPlanDTO, 0, len(plans))
-	for _, p := range plans {
-		p.NormalizeDefaults()
-		result = append(result, SubscriptionPlanDTO{
-			Plan: p,
-		})
-	}
-	common.ApiSuccess(c, result)
+	common.ApiSuccess(c, subscriptionPlanDTOs(plans))
 }
 
 type AdminUpsertSubscriptionPlanRequest struct {
