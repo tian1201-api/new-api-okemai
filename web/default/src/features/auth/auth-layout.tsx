@@ -18,6 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { Link } from '@tanstack/react-router'
 import { KeyRound, ShieldCheck, WalletCards } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -26,9 +27,19 @@ type AuthLayoutProps = {
   children: React.ReactNode
 }
 
+type AuthFeature = {
+  icon: LucideIcon
+  label: string
+}
+
 export function AuthLayout({ children }: AuthLayoutProps) {
   const { t } = useTranslation()
   const { systemName, logo, loading } = useSystemConfig()
+  const features: AuthFeature[] = [
+    { icon: KeyRound, label: t('Real token creation and key management') },
+    { icon: WalletCards, label: t('Native recharge, redemption, and payment flow') },
+    { icon: ShieldCheck, label: t('Admin permissions and channel controls stay intact') },
+  ]
 
   return (
     <div className='okemai-auth-shell relative grid min-h-svh max-w-none overflow-hidden lg:grid-cols-[minmax(0,1fr)_520px]'>
@@ -74,14 +85,10 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           </p>
 
           <div className='mt-8 grid gap-3'>
-            {[
-              [KeyRound, t('Real token creation and key management')],
-              [WalletCards, t('Native recharge, redemption, and payment flow')],
-              [ShieldCheck, t('Admin permissions and channel controls stay intact')],
-            ].map(([Icon, label]) => (
-              <div key={String(label)} className='okemai-panel flex items-center gap-3 px-4 py-3'>
+            {features.map(({ icon: Icon, label }) => (
+              <div key={label} className='okemai-panel flex items-center gap-3 px-4 py-3'>
                 <Icon className='size-5 shrink-0 text-[#58c7b8]' />
-                <span className='text-sm font-bold text-[#d9e2ef]'>{String(label)}</span>
+                <span className='text-sm font-bold text-[#d9e2ef]'>{label}</span>
               </div>
             ))}
           </div>
