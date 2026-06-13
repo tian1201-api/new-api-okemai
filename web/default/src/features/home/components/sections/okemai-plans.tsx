@@ -58,16 +58,31 @@ function getEpayMethods(payMethods: PaymentMethod[] = []): PaymentMethod[] {
   )
 }
 
+function parsePaymentMethods(raw: unknown): PaymentMethod[] {
+  if (Array.isArray(raw)) {
+    return raw.filter(
+      (method): method is PaymentMethod =>
+        !!method &&
+        typeof method === 'object' &&
+        typeof (method as PaymentMethod).type === 'string'
+    )
+  }
+  if (typeof raw !== 'string') {
+    return []
+  }
+  try {
+    const parsed = JSON.parse(raw)
+    return parsePaymentMethods(parsed)
+  } catch {
+    return []
+  }
+}
+
 function normalizeTopupInfo(data: TopupInfo | null): TopupInfo | null {
   if (!data) return null
-  const payMethods = Array.isArray(data.pay_methods)
-    ? data.pay_methods
-    : typeof data.pay_methods === 'string'
-      ? JSON.parse(data.pay_methods || '[]')
-      : []
   return {
     ...data,
-    pay_methods: Array.isArray(payMethods) ? payMethods : [],
+    pay_methods: parsePaymentMethods(data.pay_methods as unknown),
   }
 }
 
