@@ -106,6 +106,18 @@ For commercial licensing, please contact support@quantumnous.com
   background: var(--plan-accent, var(--okemai-green));
 }
 
+.okemai-plan-green {
+  --plan-accent: var(--okemai-green);
+}
+
+.okemai-plan-teal {
+  --plan-accent: var(--okemai-teal);
+}
+
+.okemai-plan-violet {
+  --plan-accent: var(--okemai-violet);
+}
+
 .okemai-auth-shell {
   min-height: 100svh;
   background:
