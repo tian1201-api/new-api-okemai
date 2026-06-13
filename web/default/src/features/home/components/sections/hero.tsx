@@ -18,6 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, BarChart3, BookOpen, KeyRound, ShieldCheck, WalletCards } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useStatus } from '@/hooks/use-status'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,12 @@ import { Button } from '@/components/ui/button'
 interface HeroProps {
   className?: string
   isAuthenticated?: boolean
+}
+
+type ConsoleAction = {
+  icon: LucideIcon
+  label: string
+  path: '/keys' | '/wallet' | '/usage-logs' | '/channels'
 }
 
 const metrics = [
@@ -38,6 +45,12 @@ export function Hero(props: HeroProps) {
   const { status } = useStatus()
   const docsUrl =
     (status?.docs_link as string | undefined) || 'https://docs.newapi.pro'
+  const consoleActions: ConsoleAction[] = [
+    { icon: KeyRound, label: t('Create and rotate API tokens'), path: '/keys' },
+    { icon: WalletCards, label: t('Recharge balance and redeem codes'), path: '/wallet' },
+    { icon: BarChart3, label: t('Review API call statistics'), path: '/usage-logs' },
+    { icon: ShieldCheck, label: t('Keep admin, channel, and permission systems intact'), path: '/channels' },
+  ]
 
   const renderDocsButton = () => {
     if (docsUrl.startsWith('http')) {
@@ -154,20 +167,15 @@ export function Hero(props: HeroProps) {
             </div>
 
             <div className='grid gap-3'>
-              {[
-                [KeyRound, t('Create and rotate API tokens'), '/keys'],
-                [WalletCards, t('Recharge balance and redeem codes'), '/wallet'],
-                [BarChart3, t('Review API call statistics'), '/usage-logs'],
-                [ShieldCheck, t('Keep admin, channel, and permission systems intact'), '/channels'],
-              ].map(([Icon, label, path]) => (
+              {consoleActions.map(({ icon: Icon, label, path }) => (
                 <Button
-                  key={String(path)}
+                  key={path}
                   variant='outline'
                   className='okemai-button-secondary h-auto justify-start rounded-lg px-4 py-4 text-left'
-                  render={<Link to={props.isAuthenticated ? String(path) : '/sign-in'} />}
+                  render={<Link to={props.isAuthenticated ? path : '/sign-in'} />}
                 >
                   <Icon className='mr-3 size-5 shrink-0 text-[#58c7b8]' />
-                  <span className='text-sm font-bold'>{String(label)}</span>
+                  <span className='text-sm font-bold'>{label}</span>
                 </Button>
               ))}
             </div>
