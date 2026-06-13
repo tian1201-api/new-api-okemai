@@ -18,6 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, BadgeCheck, Gauge, KeyRound, WalletCards } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { AnimateInView } from '@/components/animate-in-view'
@@ -33,6 +34,12 @@ type Plan = {
   accent: string
   description: string
   features: string[]
+}
+
+type NativeFlow = {
+  icon: LucideIcon
+  text: string
+  path: '/keys' | '/wallet' | '/usage-logs'
 }
 
 export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
@@ -64,6 +71,12 @@ export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
       description: t('For teams using Claude-compatible channels through New API.'),
       features: [t('Channel failover by admin rules'), t('Centralized permissions'), t('Usage analytics')],
     },
+  ]
+
+  const nativeFlows: NativeFlow[] = [
+    { icon: KeyRound, text: t('Token creation uses New API native key management'), path: '/keys' },
+    { icon: WalletCards, text: t('Recharge, redemption, and payment stay in New API wallet'), path: '/wallet' },
+    { icon: Gauge, text: t('Usage and API call statistics stay in New API logs'), path: '/usage-logs' },
   ]
 
   return (
@@ -126,19 +139,15 @@ export function OkemaiPlans({ isAuthenticated }: OkemaiPlansProps) {
         </div>
 
         <div className='mt-6 grid gap-4 md:grid-cols-3'>
-          {[
-            [KeyRound, t('Token creation uses New API native key management'), '/keys'],
-            [WalletCards, t('Recharge, redemption, and payment stay in New API wallet'), '/wallet'],
-            [Gauge, t('Usage and API call statistics stay in New API logs'), '/usage-logs'],
-          ].map(([Icon, text, path]) => (
+          {nativeFlows.map(({ icon: Icon, text, path }) => (
             <Button
-              key={String(path)}
+              key={path}
               variant='outline'
               className='okemai-button-secondary h-auto justify-start rounded-lg px-4 py-4 text-left text-sm'
-              render={<Link to={isAuthenticated ? String(path) : '/sign-in'} />}
+              render={<Link to={isAuthenticated ? path : '/sign-in'} />}
             >
               <Icon className='mr-3 size-5 shrink-0 text-[#58c7b8]' />
-              <span>{String(text)}</span>
+              <span>{text}</span>
             </Button>
           ))}
         </div>
