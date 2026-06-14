@@ -194,7 +194,10 @@ export async function getSelfSubscriptionFull(): Promise<
 }
 
 export async function getPublicPlans(): Promise<ApiResponse<PlanRecord[]>> {
-  const res = await api.get('/api/subscription/plans')
+  const res = await api.get('/api/subscription/plans', {
+    skipErrorHandler: true,
+    skipBusinessError: true,
+  })
   return res.data
 }
 
